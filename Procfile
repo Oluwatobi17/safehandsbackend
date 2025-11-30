@@ -1,0 +1,1 @@
+web: gunicorn adeccollc.wsgi:application --log-file -
