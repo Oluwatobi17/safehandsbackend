@@ -113,6 +113,25 @@ def RenewSubscription(request, pk):
     account.save();
     return Response({'message': 'Subscription Renewed'}, status=200);
 
+@api_view(['POST'])
+def ResetPassword(request):
+    email = request.data['email'];
+    user = get_object_or_404(User,email=email);
+    new_pass = str(random.randint(999999,99999999));
+    user.set_password(new_pass);
+    user.save();
+
+    data = "Hello, "+user.fullName+"\n\nYour new password is "+new_pass+"\nKindly ignore this mail if you didn't request for password reset. ";
+    # """.format(first_name,last_name,email,address,phone);
+
+    # print(data);
+    subject = 'Safehands Capital: Password Reset'
+    message = data;
+    recipient_list = [email]  # Replace with the recipient's email addresses
+
+    send_custom_email(subject, message, recipient_list)
+    return Response({'message': 'Password Reset. Kindly check your email.'}, status=200)
+    
 class SendFormEmail(View):
     def get(self, request):
         first_name = request.GET.get('first_name', None)
